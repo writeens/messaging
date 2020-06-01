@@ -21,6 +21,7 @@ export default function App() {
   ]
   const [messages, setMessages] = useState(data)
   const [fullscreenImageId, setFullscreenImageId] = useState(null)
+  const [backButtonPressed, setBackButtonPressed] = useState(null);
 
   const dismissFullscreenImage = () => {
     setFullscreenImageId(null)
@@ -99,11 +100,11 @@ export default function App() {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       console.log("Back Clicked")
       console.log(fullscreenImageId)
-      if(fullscreenImageId) {
-        dismissFullscreenImage();
+      if(fullscreenImageId){
+        dismissFullscreenImage()
         return true
       }
-      return false
+      return false;
     })
     return () => {
       subscription.remove()

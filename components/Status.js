@@ -21,7 +21,7 @@ const Status = () => {
     }
 
     const handleNetworkChange = (newInfo) => {
-        console.log("Changed from", info, 'to', newInfo.type)
+        // console.log("Changed from", info, 'to', newInfo.type)
 
         setInfo(newInfo.type)
     }

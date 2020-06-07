@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Alert, Image, TouchableHighlight, BackHandler } from 'react-native';
 import Status from './components/Status';
-import MessageList from './components/MessageList'
+import MessageList from './components/MessageList';
+import Toolbar from './components/Toolbar';
+import ImageGrid from './components/ImageGrid';
 import { createImageMessage, createTextMessage, createLocationMessage } from './utils/MessageUtils'
 
 export default function App() {
@@ -22,9 +24,32 @@ export default function App() {
   const [messages, setMessages] = useState(data)
   const [fullscreenImageId, setFullscreenImageId] = useState(null)
   const [backButtonPressed, setBackButtonPressed] = useState(null);
+  const [isInputFocused, setIsInputFocused] = useState(false)
 
   const dismissFullscreenImage = () => {
     setFullscreenImageId(null)
+  }
+
+  const handlePressToolbarCamera = () => {
+
+  }
+
+  const handlePressToolbarLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const {coords: {latitude, longitude}} = position;
+
+      const updatedMessages = [createLocationMessage({latitude, longitude}), ...messages]
+      setMessages(updatedMessages)
+    })
+  }
+
+  const handleChangeFocus = (isFocused) => {
+    setIsInputFocused(isFocused)
+  }
+
+  const handleSubmit = (text) => {
+    const updatedMessages = [createTextMessage(text), ...messages]
+    setMessages(updatedMessages)
   }
 
   const handlePressMessage = (message) => {
@@ -52,6 +77,7 @@ export default function App() {
         break;
         case 'image':
           console.log('Setting ID')
+          setIsInputFocused(false)
           setFullscreenImageId(id)
             break;
         default:
@@ -85,13 +111,23 @@ export default function App() {
 
   const renderInputMethodEditor = () => {
     return (
-      <View style={styles.inputMethodEditor}></View>
+      <View style={styles.inputMethodEditor}>
+        <ImageGrid />
+      </View>
     )
   }
 
   const renderToolbar = () => {
     return (
-      <View style={styles.toolbar}></View>
+      <View style={styles.toolbar}>
+        <Toolbar 
+          isFocused={isInputFocused}
+          onSubmit={handleSubmit}
+          onChangeFocus={handleChangeFocus}
+          onPressCamera={handlePressToolbarCamera}
+          onPressLocation={handlePressToolbarLocation}
+        />
+      </View>
     )
   }
 
